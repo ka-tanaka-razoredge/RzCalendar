@@ -11,31 +11,62 @@ interface RzCalendarProps {
 export default React.forwardRef((props: RzCalendarProps, ref) => {
   const { register } = useFormContext();
   const [value, setValue] = React.useState('');
-  let isShowing = false;
-  //I WILL DELETE  const proxy = React.useRef<HTMLInputElement | null>(null);
+  const proxy = React.useRef<HTMLInputElement>(null);
   const picker = React.useRef<Flatpickr>(null);
+  const [isShowing, setIsShowing] = React.useState(false);
+
+  const formatDate = (date, format) => {
+    format = format.replace(/yyyy/g, date.getFullYear());
+    format = format.replace(/MM/g, ('0' + (date.getMonth() + 1)).slice(-2));
+    format = format.replace(/dd/g, ('0' + date.getDate()).slice(-2));
+    format = format.replace(/HH/g, ('0' + date.getHours()).slice(-2));
+    format = format.replace(/mm/g, ('0' + date.getMinutes()).slice(-2));
+    format = format.replace(/ss/g, ('0' + date.getSeconds()).slice(-2));
+    format = format.replace(/SSS/g, ('00' + date.getMilliseconds()).slice(-3));
+    return format;
+  };
+
+  const toDateString = (source, delimiter) => {
+    const memento = source.split(delimiter);
+    const year = memento[0];
+    const month = ('00' + memento[1]).slice(-2);
+    const day = ('00' + memento[2]).slice(-2);
+    console.log(`here: ${year}-${month}-${day}`);
+    return `${year}-${month}-${day}T00:00:00.000Z`;
+    //    return new Date(memento[0], memento[1] - 1, memento[2]).toDateString();
+  };
+
+  React.useEffect(() => {
+    picker.current.flatpickr.setDate(new Date(toDateString(value, '/')));
+  }, [value]);
 
   return (
     <div>
       <div
         onClick={(e) => {
+          console.log(proxy);
           if (!isShowing) {
             picker.current.flatpickr.open();
-            isShowing = true;
+            setIsShowing(true);
           } else {
-            isShowing = false;
+            picker.current.flatpickr.close();
+            setIsShowing(false);
           }
         }}
         style={{ position: 'absolute', zIndex: 1000 }}
       >
         <input
+          ref={proxy}
+          readOnly={isShowing}
           {...register('birthdate')}
           value={value}
           onChange={(e) => {
+            console.log(e.target.value);
             setValue(e.target.value);
           }}
         />
       </div>
+
       <Flatpickr
         ref={picker}
         options={{
@@ -43,7 +74,7 @@ export default React.forwardRef((props: RzCalendarProps, ref) => {
         }}
         onChange={(e) => {
           console.log(e);
-          setValue((e[0] as Date).toLocaleDateString());
+          setValue(formatDate(e[0] as Date, 'yyyy/MM/dd'));
         }}
       />
     </div>
