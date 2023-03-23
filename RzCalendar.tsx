@@ -38,9 +38,7 @@ export default React.forwardRef((props: RzCalendarProps, ref) => {
     const year = memento[0];
     const month = ('00' + memento[1]).slice(-2);
     const day = ('00' + memento[2]).slice(-2);
-    console.log(`here: ${year}-${month}-${day}`);
     return `${year}-${month}-${day}T00:00:00.000Z`;
-    //    return new Date(memento[0], memento[1] - 1, memento[2]).toDateString();
   };
 
   React.useEffect(() => {

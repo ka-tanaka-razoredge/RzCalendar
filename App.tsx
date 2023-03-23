@@ -5,6 +5,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import './style.css';
 
+import useDate from './utilities/useDate';
+
 const schema = z.object({
   birthdate: z
     .string()
@@ -15,8 +17,10 @@ const schema = z.object({
     .refine((v) => {
       console.log('---- begin ----');
       console.log(v);
+      const stringToDate = useDate().toDateString(v, '/');
+      console.log(new Date(stringToDate).getTime());
       console.log('---- end ----');
-      return isNaN(new Date(v).getTime());
+      return isNaN(new Date(stringToDate).getTime());
     }, 'wrong'),
 });
 
