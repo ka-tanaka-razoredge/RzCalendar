@@ -10,7 +10,6 @@ interface RzCalendarProps {
 
 export default React.forwardRef((props: RzCalendarProps, ref) => {
   const { register } = useFormContext();
-  const [value, setValue] = React.useState('');
   const proxy = React.useRef<HTMLInputElement>(null);
   const picker = React.useRef<Flatpickr>(null);
   const [isShowing, setIsShowing] = React.useState(false);
@@ -25,6 +24,14 @@ export default React.forwardRef((props: RzCalendarProps, ref) => {
     format = format.replace(/SSS/g, ('00' + date.getMilliseconds()).slice(-3));
     return format;
   };
+
+  const inquire2Decades = () => {
+    let memento = new Date();
+    memento.setFullYear(memento.getFullYear() - 20);
+    return formatDate(memento, 'yyyy/MM/dd');
+  };
+
+  const [value, setValue] = React.useState(inquire2Decades());
 
   const toDateString = (source, delimiter) => {
     const memento = source.split(delimiter);
@@ -56,6 +63,7 @@ export default React.forwardRef((props: RzCalendarProps, ref) => {
         style={{ position: 'absolute', zIndex: 1000 }}
       >
         <input
+          type="text"
           ref={proxy}
           readOnly={isShowing}
           {...register('birthdate')}

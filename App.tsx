@@ -6,26 +6,23 @@ import * as z from 'zod';
 import './style.css';
 
 const schema = z.object({
-  birthdate: z.string().refine(() => {
-    console.log('---- begin ----');
-    console.log(z);
-    console.log('---- end ----');
-    return false;
-  }, 'wrong'),
+  birthdate: z
+    .string()
+    .min(1, { message: 'required' })
+    .refine((v) => {
+      return !(v === '2023/02/29');
+    }, 'invalid date')
+    .refine((v) => {
+      console.log('---- begin ----');
+      console.log(v);
+      console.log('---- end ----');
+      return isNaN(new Date(v).getTime());
+    }, 'wrong'),
 });
 
 type Schema = z.infer<typeof schema>;
 
 export default function App() {
-  /*  
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<Schema>({
-    resolver: zodResolver(schema),
-  });
-*/
   const useFormMethods = useForm<Schema>({
     resolver: zodResolver(schema),
   });
