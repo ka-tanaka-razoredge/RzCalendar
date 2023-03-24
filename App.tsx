@@ -20,7 +20,7 @@ const schema = z.object({
       const stringToDate = useDate().toDateString(v, '/');
       console.log(new Date(stringToDate).getTime());
       console.log('---- end ----');
-      return isNaN(new Date(stringToDate).getTime());
+      return !isNaN(new Date(v).getTime());
     }, 'wrong'),
 });
 

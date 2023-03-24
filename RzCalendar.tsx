@@ -1,8 +1,11 @@
 import * as React from 'react';
 import 'flatpickr/dist/flatpickr.min.css';
 import Flatpickr from 'react-flatpickr';
+import { Japanese } from 'flatpickr/dist/l10n/ja.js';
 
 import { useFormContext } from 'react-hook-form';
+import flatpickr from 'flatpickr';
+flatpickr.localize(Japanese);
 
 interface RzCalendarProps {
   name: string;
